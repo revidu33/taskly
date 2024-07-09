@@ -1,8 +1,7 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:taskly/models/user.dart';
-import 'package:taskly/provider/LoginProvider.dart'; // Adjust the import to match your file structure
+import 'package:taskly/provider/LoginProvider.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -31,8 +30,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: [
               const SizedBox(height: 100),
-              Container(
-                width: MediaQuery.of(context).size.width,
+              Center(
                 child: AvatarGlow(
                   startDelay: const Duration(milliseconds: 2000),
                   glowCount: 2,
@@ -42,7 +40,6 @@ class _LoginPageState extends State<LoginPage> {
                   child: const Material(
                     elevation: 25.0,
                     shape: CircleBorder(),
-                    color: Colors.transparent,
                     child: CircleAvatar(
                       backgroundColor: Colors.transparent,
                       radius: 120,
@@ -54,81 +51,76 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 50),
-              Container(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const SizedBox(height: 50),
-                      TextFormField(
-                        cursorColor: Colors.white,
-                        controller: _emailController,
+              Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    const SizedBox(height: 50),
+                    TextFormField(
+                      cursorColor: Colors.white,
+                      controller: _emailController,
+                      style: const TextStyle(color: Colors.white), // Text color
+                      decoration: const InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
+                        labelText: 'Username',
+                        labelStyle: TextStyle(color: Colors.white),
+                        hintStyle:
+                            TextStyle(color: Colors.white), // Hint text color
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your username';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 30),
+                    TextFormField(
+                      controller: _passwordController,
+                      style: const TextStyle(color: Colors.white), // Text color
+                      decoration: const InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
+                        labelText: 'Password',
+                        labelStyle: TextStyle(color: Colors.white),
+                        hintStyle:
+                            TextStyle(color: Colors.white), // Hint text color
+                        border: OutlineInputBorder(),
+                        fillColor: Color.fromARGB(255, 148, 33, 33),
+                      ),
+                      obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(Colors.white),
+                      ),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          Provider.of<LoginProvider>(context, listen: false)
+                              .login(
+                            _emailController.text,
+                            _passwordController.text,
+                          );
+                        }
+                      },
+                      child: const Text(
+                        'Login',
                         style:
-                            const TextStyle(color: Colors.white), // Text color
-                        decoration: const InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                          labelText: 'Username',
-                          labelStyle: TextStyle(color: Colors.white),
-                          hintStyle:
-                              TextStyle(color: Colors.white), // Hint text color
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your username';
-                          }
-                          return null;
-                        },
+                            TextStyle(color: Colors.black), // Button text color
                       ),
-                      const SizedBox(height: 30),
-                      TextFormField(
-                        controller: _passwordController,
-                        style:
-                            const TextStyle(color: Colors.white), // Text color
-                        decoration: const InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                          labelText: 'Password',
-                          labelStyle: TextStyle(color: Colors.white),
-                          hintStyle:
-                              TextStyle(color: Colors.white), // Hint text color
-                          border: OutlineInputBorder(),
-                          fillColor: Color.fromARGB(255, 148, 33, 33),
-                        ),
-                        obscureText: true,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.white),
-                        ),
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            Provider.of<LoginProvider>(context, listen: false)
-                                .login(
-                              _emailController.text,
-                              _passwordController.text,
-                            );
-                          }
-                        },
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(
-                              color: Colors.black), // Button text color
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],
