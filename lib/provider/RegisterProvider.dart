@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:taskly/provider/updateDB.dart';
+import 'package:taskly/services/db/updateDB.dart';
 
 class RegisterProvider with ChangeNotifier {
   String? _name;
@@ -54,11 +54,11 @@ class RegisterProvider with ChangeNotifier {
     _name = name;
     _email = email;
     _password = password;
-    if (await updateDB.isEmailRegistered(email)) {
+    if (await UpdateDB.isEmailRegistered(email)) {
       isLoading = false;
       return false;
     } else {
-      updateDB.create(name, name, email, password);
+      UpdateDB.create(name, name, email, password);
       notifyListeners();
       return true;
     }

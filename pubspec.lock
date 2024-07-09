@@ -142,6 +142,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
+  flutter_popup_card:
+    dependency: "direct main"
+    description:
+      name: flutter_popup_card
+      sha256: "0f3ad7963e7c38e0d97b430901220f0729a251945b83ddeb77b303ea53c7deff"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.5"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -200,6 +208,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.8.0"
+  material_text_fields:
+    dependency: "direct main"
+    description:
+      name: material_text_fields
+      sha256: "3c9866d1bc6abc546a0c4dedc2166c015ae2108fa76d63b1c61c058fa5700639"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.5"
   meta:
     dependency: transitive
     description:
@@ -240,6 +256,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.2"
+  roundcheckbox:
+    dependency: "direct main"
+    description:
+      name: roundcheckbox
+      sha256: "5d6f607ed9d26fde0072af2545f56d84a6b6d2a45972b0c41f90c2d73224f339"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.5"
   sky_engine:
     dependency: transitive
     description: flutter

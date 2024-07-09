@@ -40,6 +40,9 @@ dependencies:
   cloud_firestore: ^5.0.2
   crypto: ^3.0.3
   firebase_core: ^3.1.1
+  flutter_popup_card: ^0.0.5
+  roundcheckbox: ^2.0.5
+  material_text_fields: ^1.0.5
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,8 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:taskly/models/user.dart'; // Adjust the import to match your file structure
+import 'package:taskly/models/user.dart';
+import 'package:taskly/provider/LoginProvider.dart'; // Adjust the import to match your file structure
 
 class LoginPage extends StatefulWidget {
   @override
@@ -10,12 +11,12 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -62,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 50),
                       TextFormField(
                         cursorColor: Colors.white,
-                        controller: _usernameController,
+                        controller: _emailController,
                         style:
                             const TextStyle(color: Colors.white), // Text color
                         decoration: const InputDecoration(
@@ -113,12 +114,10 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            Provider.of<User>(context, listen: false).login(
-                              _usernameController.text,
+                            Provider.of<LoginProvider>(context, listen: false)
+                                .login(
+                              _emailController.text,
                               _passwordController.text,
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Login Successful')),
                             );
                           }
                         },
