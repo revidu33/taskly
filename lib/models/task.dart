@@ -12,6 +12,8 @@ class Task {
     required this.dueDate,
   });
 
+  get isComplete => _isComplete;
+
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
       'title': title,

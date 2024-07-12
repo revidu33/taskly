@@ -5,7 +5,7 @@ import 'package:taskly/provider/TaskProvider.dart';
 import 'package:taskly/widgets/info_box.dart';
 import 'package:taskly/widgets/search_bar.dart';
 import 'package:taskly/widgets/task_card.dart';
-import 'package:taskly/widgets/add_task_dialog.dart';
+import 'package:taskly/widgets/task_dialog.dart';
 
 class TaskPage extends StatefulWidget {
   @override
@@ -16,7 +16,14 @@ class _TaskPageState extends State<TaskPage> {
   void _showAddTaskDialog() {
     showDialog(
       context: context,
-      builder: (context) => AddTaskDialog(),
+      builder: (context) => TaskDialog(),
+    );
+  }
+
+  void _showEditTaskDialog(Task task) {
+    showDialog(
+      context: context,
+      builder: (context) => TaskDialog(task: task),
     );
   }
 
@@ -58,15 +65,15 @@ class _TaskPageState extends State<TaskPage> {
                   InfoBox(
                     color: Color.fromARGB(255, 7, 108, 98),
                     textOne: 'complete: ',
-                    textTwo: 'incomplete ',
-                    textThree: '',
+                    textTwo: 'incomplete: ',
+                    textThree: 'overdue:',
                   ),
                 ],
               ),
             ],
           ),
           backgroundColor: Colors.teal[600],
-          bottom: TabBar(
+          bottom: const TabBar(
             labelColor: Colors.white,
             indicatorColor: Colors.tealAccent,
             tabs: [
@@ -81,6 +88,7 @@ class _TaskPageState extends State<TaskPage> {
               height: double.infinity,
               child: Consumer<TaskProvider>(
                 builder: (context, taskProvider, child) {
+                  taskProvider.loadTasks();
                   return ListView.builder(
                     itemCount: taskProvider.tasks.length,
                     itemBuilder: (context, index) {
@@ -91,16 +99,26 @@ class _TaskPageState extends State<TaskPage> {
                           child: Column(
                             children: [
                               SearchInput(),
-                              TaskCard(task: taskProvider.tasks[index]),
+                              TaskCard(
+                                task: taskProvider.tasks[index],
+                                delete: () async {
+                                  await taskProvider.deleteTask(
+                                      taskProvider.tasks[index].id!);
+                                },
+                              ),
                             ],
                           ),
                         );
                       }
                       return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5.0, horizontal: 20.0),
-                        child: TaskCard(task: taskProvider.tasks[index]),
-                      );
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5.0, horizontal: 20.0),
+                          child: TaskCard(
+                            task: taskProvider.tasks[index],
+                            delete: () async {
+                              taskProvider.tasks.clear();
+                            },
+                          ));
                     },
                   );
                 },
@@ -110,6 +128,7 @@ class _TaskPageState extends State<TaskPage> {
               height: double.infinity,
               child: Consumer<TaskProvider>(
                 builder: (context, taskProvider, child) {
+                  taskProvider.loadTasks();
                   return ListView.builder(
                     itemCount: taskProvider.tasks.length,
                     itemBuilder: (context, index) {
@@ -118,6 +137,9 @@ class _TaskPageState extends State<TaskPage> {
                             vertical: 5.0, horizontal: 20.0),
                         child: TaskCard(
                           task: taskProvider.tasks[index],
+                          delete: () async {
+                            await taskProvider.deleteTask(index + 1);
+                          },
                         ),
                       );
                     },

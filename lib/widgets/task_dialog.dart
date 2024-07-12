@@ -4,16 +4,32 @@ import 'package:taskly/models/task.dart';
 import 'package:taskly/provider/TaskProvider.dart';
 import 'package:intl/intl.dart';
 
-class AddTaskDialog extends StatefulWidget {
+class TaskDialog extends StatefulWidget {
+  final Task? task;
+
+  const TaskDialog({super.key, this.task});
+
   @override
-  _AddTaskDialogState createState() => _AddTaskDialogState();
+  _TaskDialogState createState() => _TaskDialogState();
 }
 
-class _AddTaskDialogState extends State<AddTaskDialog> {
+class _TaskDialogState extends State<TaskDialog> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.task != null) {
+      _titleController.text = widget.task!.title;
+      _descriptionController.text = widget.task!.description;
+      final dateTime = DateFormat.yMMMd().add_jm().parse(widget.task!.dueDate);
+      _selectedDate = dateTime;
+      _selectedTime = TimeOfDay.fromDateTime(dateTime);
+    }
+  }
 
   @override
   void dispose() {
@@ -23,10 +39,13 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
+    final DateTime currentDate = DateTime.now();
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
+      initialDate: _selectedDate != null && _selectedDate!.isAfter(currentDate)
+          ? _selectedDate!
+          : currentDate,
+      firstDate: currentDate,
       lastDate: DateTime(2101),
       builder: (context, child) {
         return Theme(
@@ -45,17 +64,19 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
         );
       },
     );
-    if (picked != null && picked != _selectedDate) {
+    if (picked != null && picked.isAfter(currentDate)) {
       setState(() {
         _selectedDate = picked;
       });
+    } else {
+      // Show an error message or handle invalid date selection if needed
     }
   }
 
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: _selectedTime ?? TimeOfDay.now(),
       builder: (context, child) {
         return Theme(
           data: ThemeData.light().copyWith(
@@ -73,7 +94,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
         );
       },
     );
-    if (picked != null && picked != _selectedTime) {
+    if (picked != null) {
       setState(() {
         _selectedTime = picked;
       });
@@ -105,7 +126,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Add New Task',
+                widget.task == null ? 'Add New Task' : 'Edit Task',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -195,28 +216,32 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
           },
           child: const Text('Cancel', style: TextStyle(color: Colors.teal)),
         ),
-        ElevatedButton(
+        TextButton(
           onPressed: () {
             if (_titleController.text.isNotEmpty &&
-                _descriptionController.text.isNotEmpty &&
                 _selectedDate != null &&
                 _selectedTime != null) {
-              Provider.of<TaskProvider>(context, listen: false).addTask(
-                Task(
-                  title: _titleController.text,
-                  description: _descriptionController.text,
-                  dueDate: _formatDateTime(_selectedDate!, _selectedTime!),
-                ),
+              final dueDate = _formatDateTime(_selectedDate!, _selectedTime!);
+              final task = Task(
+                id: widget.task?.id,
+                title: _titleController.text,
+                description: _descriptionController.text,
+                dueDate: dueDate,
               );
-              _titleController.clear();
-              _descriptionController.clear();
+              final taskProvider =
+                  Provider.of<TaskProvider>(context, listen: false);
+              if (widget.task == null) {
+                taskProvider.addTask(task);
+              } else {
+                taskProvider.updateTask(task);
+              }
               Navigator.of(context).pop();
             }
           },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.teal,
+          child: Text(
+            widget.task == null ? 'Add Task' : 'Update Task',
+            style: const TextStyle(color: Colors.teal),
           ),
-          child: const Text('Add'),
         ),
       ],
     );

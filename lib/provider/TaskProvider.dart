@@ -32,6 +32,7 @@ class TaskProvider with ChangeNotifier {
   Future<void> deleteTask(int id) async {
     await _dbHelper.deleteTask(id);
     await loadTasks();
+    notifyListeners();
   }
 
   Future<void> loadComments(int taskId) async {
