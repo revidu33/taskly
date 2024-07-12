@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 class TaskDialog extends StatefulWidget {
   final Task? task;
 
-  const TaskDialog({super.key, this.task});
+  const TaskDialog({Key? key, this.task}) : super(key: key);
 
   @override
   _TaskDialogState createState() => _TaskDialogState();
@@ -42,9 +42,7 @@ class _TaskDialogState extends State<TaskDialog> {
     final DateTime currentDate = DateTime.now();
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate != null && _selectedDate!.isAfter(currentDate)
-          ? _selectedDate!
-          : currentDate,
+      initialDate: _selectedDate ?? currentDate,
       firstDate: currentDate,
       lastDate: DateTime(2101),
       builder: (context, child) {
@@ -64,13 +62,20 @@ class _TaskDialogState extends State<TaskDialog> {
         );
       },
     );
-    if (picked != null && picked.isAfter(currentDate)) {
+    if (picked != null &&
+        (picked.isAfter(currentDate) || _isSameDay(picked, currentDate))) {
       setState(() {
         _selectedDate = picked;
       });
     } else {
       // Show an error message or handle invalid date selection if needed
     }
+  }
+
+  bool _isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 
   Future<void> _selectTime(BuildContext context) async {

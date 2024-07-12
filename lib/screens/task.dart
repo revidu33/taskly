@@ -116,7 +116,8 @@ class _TaskPageState extends State<TaskPage> {
                           child: TaskCard(
                             task: taskProvider.tasks[index],
                             delete: () async {
-                              taskProvider.tasks.clear();
+                              taskProvider
+                                  .deleteTask(taskProvider.tasks[index].id!);
                             },
                           ));
                     },
