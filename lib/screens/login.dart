@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: AvatarGlow(
                   startDelay: const Duration(milliseconds: 2000),
                   glowCount: 2,
-                  glowColor: const Color.fromARGB(255, 199, 234, 180),
+                  glowColor: Color.fromARGB(255, 65, 84, 55),
                   glowShape: BoxShape.circle,
                   animate: true,
                   child: const Material(
