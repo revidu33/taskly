@@ -6,8 +6,10 @@ import 'package:intl/intl.dart';
 class TaskCard extends StatelessWidget {
   final Task task;
   final Future<void> Function()? delete;
+  final Future<void> Function()? complete;
 
-  const TaskCard({super.key, required this.task, required this.delete});
+  const TaskCard(
+      {super.key, required this.task, required this.delete, this.complete});
 
   void _showEditTaskDialog(BuildContext context) {
     showDialog(
@@ -19,10 +21,12 @@ class TaskCard extends StatelessWidget {
   String _getTaskStatus() {
     final DateTime now = DateTime.now();
     final DateTime dueDate = DateFormat.yMMMd().add_jm().parse(task.dueDate);
-    if (dueDate.isBefore(now)) {
+    if (dueDate.isBefore(now) && task.isCompleted != 1) {
       return 'Overdue';
-    } else {
+    } else if (!dueDate.isBefore(now) && task.isCompleted != 1) {
       return 'In Progress';
+    } else {
+      return 'Completed';
     }
   }
 
@@ -32,6 +36,8 @@ class TaskCard extends StatelessWidget {
         return Colors.red;
       case 'In Progress':
         return Colors.orange;
+      case 'Completed':
+        return Colors.green;
       default:
         return Colors.grey;
     }
@@ -60,32 +66,38 @@ class TaskCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
               children: [
-                Text(
-                  task.title,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: statusColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Text(
+                        taskStatus,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: statusColor,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
+                Align(
+                  alignment: Alignment.centerLeft,
                   child: Text(
-                    taskStatus,
-                    style: TextStyle(
-                      fontSize: 14,
+                    task.title,
+                    style: const TextStyle(
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: statusColor,
+                      color: Colors.black,
                     ),
                   ),
                 ),
@@ -138,8 +150,10 @@ class TaskCard extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.check_circle),
                   color: Colors.green,
-                  onPressed: () {
-                    // Implement complete functionality
+                  onPressed: () async {
+                    if (complete != null) {
+                      await complete!();
+                    }
                   },
                 ),
               ],

@@ -3,22 +3,29 @@ class Task {
   String title;
   String description;
   String dueDate;
-  bool? _isComplete;
+  int? isCompleted;
 
-  Task({
-    this.id,
-    required this.title,
-    required this.description,
-    required this.dueDate,
-  });
+  Task(
+      {this.id,
+      required this.title,
+      required this.description,
+      required this.dueDate,
+      required isCompleted});
 
-  get isComplete => _isComplete;
+  set(bool isComplete) {
+    if (isComplete == true) {
+      isCompleted = 1;
+    } else {
+      isCompleted = 0;
+    }
+  }
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
       'title': title,
       'description': description,
       'dueDate': dueDate,
+      'isCompleted': isCompleted,
     };
     if (id != null) {
       map['id'] = id;
@@ -30,5 +37,6 @@ class Task {
       : id = map['id'],
         title = map['title'],
         description = map['description'],
-        dueDate = map['dueDate'];
+        dueDate = map['dueDate'],
+        isCompleted = map['isCompleted'];
 }

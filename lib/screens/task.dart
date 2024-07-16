@@ -16,7 +16,7 @@ class _TaskPageState extends State<TaskPage> {
   void _showAddTaskDialog() {
     showDialog(
       context: context,
-      builder: (context) => TaskDialog(),
+      builder: (context) => const TaskDialog(),
     );
   }
 
@@ -105,6 +105,10 @@ class _TaskPageState extends State<TaskPage> {
                                   await taskProvider.deleteTask(
                                       taskProvider.tasks[index].id!);
                                 },
+                                complete: () async {
+                                  await taskProvider
+                                      .completeTask(taskProvider.tasks[index]);
+                                },
                               ),
                             ],
                           ),
@@ -119,6 +123,10 @@ class _TaskPageState extends State<TaskPage> {
                               taskProvider
                                   .deleteTask(taskProvider.tasks[index].id!);
                             },
+                            complete: () async {
+                              await taskProvider
+                                  .completeTask(taskProvider.tasks[index]);
+                            },
                           ));
                     },
                   );
@@ -129,17 +137,17 @@ class _TaskPageState extends State<TaskPage> {
               height: double.infinity,
               child: Consumer<TaskProvider>(
                 builder: (context, taskProvider, child) {
-                  taskProvider.loadTasks();
+                  taskProvider.loadCompletedTasks();
                   return ListView.builder(
-                    itemCount: taskProvider.tasks.length,
+                    itemCount: taskProvider.completedTasks.length,
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 5.0, horizontal: 20.0),
                         child: TaskCard(
-                          task: taskProvider.tasks[index],
+                          task: taskProvider.completedTasks[index],
                           delete: () async {
-                            await taskProvider.deleteTask(index + 1);
+                            await taskProvider.deleteTask(index);
                           },
                         ),
                       );

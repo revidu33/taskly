@@ -4,8 +4,6 @@ import 'package:taskly/provider/LoginProvider.dart';
 import 'package:taskly/provider/RegisterProvider.dart';
 import 'package:taskly/provider/TaskProvider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:taskly/screens/login.dart';
-import 'package:taskly/screens/register.dart';
 import 'package:taskly/screens/task.dart';
 import 'firebase_options.dart';
 

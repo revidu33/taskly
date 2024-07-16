@@ -145,6 +145,7 @@ class _TaskDialogState extends State<TaskDialog> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
+                  maxLength: 30,
                   controller: _titleController,
                   decoration: InputDecoration(
                     border: InputBorder.none,
@@ -153,14 +154,21 @@ class _TaskDialogState extends State<TaskDialog> {
                     fillColor: Colors.white,
                     filled: true,
                     disabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: const BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: const BorderSide(color: Colors.white),
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  style: TextStyle(
+                    color: Colors.teal[800],
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: null, // Allow text to wrap into multiple lines
+                  textAlignVertical: TextAlignVertical.top,
                 ),
               ),
               const SizedBox(height: 20),
@@ -232,6 +240,7 @@ class _TaskDialogState extends State<TaskDialog> {
                 title: _titleController.text,
                 description: _descriptionController.text,
                 dueDate: dueDate,
+                isCompleted: 0,
               );
               final taskProvider =
                   Provider.of<TaskProvider>(context, listen: false);

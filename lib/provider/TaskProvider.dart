@@ -5,17 +5,30 @@ import 'package:taskly/services/db/local_db_helper.dart';
 
 class TaskProvider with ChangeNotifier {
   List<Task> _tasks = [];
+  List<Task> _completedTasks = [];
   List<Comment> _comments = [];
   final DatabaseHelper _dbHelper = DatabaseHelper();
 
   List<Task> get tasks => _tasks;
+  List<Task> get completedTasks => _completedTasks;
+
   List<Comment> get comments => _comments;
 
-  // db related tasks
-
+  // Load all tasks
   Future<void> loadTasks() async {
     final dataList = await _dbHelper.getTasks();
     _tasks = dataList.map((item) => Task.fromMap(item)).toList();
+    notifyListeners();
+  }
+
+  // Load only completed tasks
+  Future<void> loadCompletedTasks() async {
+    final dataList = await _dbHelper.getTasks();
+    _completedTasks = dataList
+        .map((item) => Task.fromMap(item))
+        .where((item) => item.isCompleted == 1)
+        .toList();
+    print(completedTasks);
     notifyListeners();
   }
 
@@ -29,10 +42,18 @@ class TaskProvider with ChangeNotifier {
     await loadTasks();
   }
 
+  Future<void> completeTask(Task task) async {
+    task.isCompleted = 1;
+    print(task.description + '$task');
+    print(task.isCompleted);
+
+    await _dbHelper.updateTask(task.toMap());
+    await loadCompletedTasks();
+  }
+
   Future<void> deleteTask(int id) async {
     await _dbHelper.deleteTask(id);
     await loadTasks();
-    notifyListeners();
   }
 
   Future<void> loadComments(int taskId) async {
@@ -56,7 +77,7 @@ class TaskProvider with ChangeNotifier {
     await loadComments(taskId);
   }
 
-  // search bar
+  // Search functionality
   String _searchQuery = '';
 
   String get searchQuery => _searchQuery;
